@@ -30,7 +30,8 @@ RUN wget -q http://apache.mirror.anlx.net/lucene/solr/$SOLR_VERSION/solr-$SOLR_V
 	tar xzf ./solr-$SOLR_VERSION.tgz solr-$SOLR_VERSION/bin/install_solr_service.sh --strip-components=2 && \
 	./install_solr_service.sh solr-$SOLR_VERSION.tgz -i $SOLR_PATH -n && \
 	echo ZK_HOST=$ZK_HOST >> /etc/default/solr.in.sh && \
-	chmod +x /opt/solr/server/scripts/cloud-scripts/zkcli.sh
+	chmod +x /opt/solr/server/scripts/cloud-scripts/zkcli.sh && \
+	rm -fv /solr-$SOLR_VERSION.tgz
 	
 EXPOSE $SOLR_PORT
 EXPOSE 22
