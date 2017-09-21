@@ -31,16 +31,9 @@ RUN mkdir /var/run/sshd && \
 
 RUN echo "$SOLR_USER ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-RUN wget -q http://apache.mirror.anlx.net/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz && \
-	tar xzf ./solr-$SOLR_VERSION.tgz solr-$SOLR_VERSION/bin/install_solr_service.sh --strip-components=2 && \
-	mkdir /opt && \
-	mkdir /etc/default && \
-	sed -i 's/update-rc.d/rc-update/g' install_solr_service.sh && \
-	adduser -S -D -h /var/solr -s /bin/bash solr && \
-	./install_solr_service.sh solr-$SOLR_VERSION.tgz -i $SOLR_PATH -n && \
-	echo ZK_HOST=$ZK_HOST >> /etc/default/solr.in.sh && \
-	chmod +x /opt/solr/server/scripts/cloud-scripts/zkcli.sh && \
-	rm -fv /solr-$SOLR_VERSION.tgz
+COPY install_solr.sh .
+RUN chmod +x ./install_solr.sh
+RUN ./install_solr.sh
 	
 EXPOSE $SOLR_PORT
 EXPOSE 22
@@ -48,4 +41,4 @@ EXPOSE 22
 WORKDIR /home/$SOLR_USER
 USER $SOLR_USER
 
-CMD sudo service solr start && sudo service ssh restart && sleep 10 && /bin/bash
+CMD sudo service solr start && sudo service sshd restart && sleep 10 && /bin/bash
