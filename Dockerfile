@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 MAINTAINER Joao Maria <joao.maria@sky.uk>
 
-RUN apt-get update && apt-get install -y openssh-server openjdk-8-jdk lsof sudo
+RUN apt-get update && apt-get install -y openssh-server openjdk-8-jdk lsof sudo nano
 
 ENV SOLR_USER dev
 ENV SOLR_PASS dev
