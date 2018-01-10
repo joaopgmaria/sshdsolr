@@ -26,6 +26,10 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 RUN echo "$SOLR_USER ALL=NOPASSWD: ALL" >> /etc/sudoers
 
+#Change default shell to bash for user and root
+RUN chsh -s /bin/bash $SOLR_USER
+RUN chsh -s /bin/bash root
+
 RUN wget -q http://archive.apache.org/dist/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz && \
 	tar xzf ./solr-$SOLR_VERSION.tgz solr-$SOLR_VERSION/bin/install_solr_service.sh --strip-components=2 && \
 	./install_solr_service.sh solr-$SOLR_VERSION.tgz -i $SOLR_PATH -n && \
