@@ -1,11 +1,10 @@
 FROM ubuntu:16.04
-MAINTAINER Joao Maria <joao.maria@sky.uk>
 
 RUN apt-get update && apt-get install -y openssh-server openjdk-8-jdk lsof sudo nano
 
-ENV SOLR_USER solr
-ENV SOLR_PASS solr
-ENV SOLR_GROUP solrusers
+ENV SOLR_USER dev
+ENV SOLR_PASS dev
+ENV SOLR_GROUP dev
 ENV SOLR_VERSION 6.6.1
 ENV SOLR_PORT 8983
 ENV SOLR_PATH /opt
@@ -32,11 +31,9 @@ RUN chsh -s /bin/bash root
 
 RUN wget -q http://archive.apache.org/dist/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz && \
 	tar xzf ./solr-$SOLR_VERSION.tgz solr-$SOLR_VERSION/bin/install_solr_service.sh --strip-components=2 && \
-	./install_solr_service.sh solr-$SOLR_VERSION.tgz -i $SOLR_PATH -n && \
+	./install_solr_service.sh solr-$SOLR_VERSION.tgz -i $SOLR_PATH -n -p $SOLR_PORT -u $SOLR_USER && \
 	echo ZK_HOST=$ZK_HOST >> /etc/default/solr.in.sh && \
 	echo "SOLR_HOST=$(cat /etc/hostname)" >> /etc/default/solr.in.sh && \
-	echo SOLR_AUTH_TYPE="basic" >> /etc/default/solr.in.sh && \
-	echo SOLR_AUTHENTICATION_OPTS="-Dbasicauth=solr:solr" >> /etc/default/solr.in.sh && \
 	chmod +x /opt/solr/server/scripts/cloud-scripts/zkcli.sh && \
 	rm -fv /solr-$SOLR_VERSION.tgz
 	
@@ -45,5 +42,7 @@ EXPOSE 22
 
 WORKDIR /home/$SOLR_USER
 USER $SOLR_USER
+
+#RUN /bin/bash -c '[[ ! -z "$SOLR_ACCESS_USER" ]] && [[ ! -z "$SOLR_ACCESS_PASS" ]] && echo SOLR_AUTH_TYPE="basic" >> sample && echo SOLR_AUTHENTICATION_OPTS="-Dbasicauth=$SOLR_ACCESS_USER:$SOLR_ACCESS_PASS" >> sample'
 
 CMD sudo service solr start && sudo service ssh restart && sleep 10 && /bin/bash
