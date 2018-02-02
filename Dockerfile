@@ -32,17 +32,16 @@ RUN chsh -s /bin/bash root
 RUN wget -q http://archive.apache.org/dist/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz && \
 	tar xzf ./solr-$SOLR_VERSION.tgz solr-$SOLR_VERSION/bin/install_solr_service.sh --strip-components=2 && \
 	./install_solr_service.sh solr-$SOLR_VERSION.tgz -i $SOLR_PATH -n -p $SOLR_PORT -u $SOLR_USER && \
-	echo ZK_HOST=$ZK_HOST >> /etc/default/solr.in.sh && \
-	echo "SOLR_HOST=$(cat /etc/hostname)" >> /etc/default/solr.in.sh && \
 	chmod +x /opt/solr/server/scripts/cloud-scripts/zkcli.sh && \
 	rm -fv /solr-$SOLR_VERSION.tgz
 	
 EXPOSE $SOLR_PORT
 EXPOSE 22
 
+COPY ./prepare_solr.sh /home/$SOLR_USER
+RUN chmod +x /home/$SOLR_USER/prepare_solr.sh
+
 WORKDIR /home/$SOLR_USER
 USER $SOLR_USER
 
-#RUN /bin/bash -c '[[ ! -z "$SOLR_ACCESS_USER" ]] && [[ ! -z "$SOLR_ACCESS_PASS" ]] && echo SOLR_AUTH_TYPE="basic" >> sample && echo SOLR_AUTHENTICATION_OPTS="-Dbasicauth=$SOLR_ACCESS_USER:$SOLR_ACCESS_PASS" >> sample'
-
-CMD sudo service solr start && sudo service ssh restart && sleep 10 && /bin/bash
+CMD ./prepare_solr.sh && sudo service solr start && sudo service ssh restart && sleep 10 && /bin/bash
