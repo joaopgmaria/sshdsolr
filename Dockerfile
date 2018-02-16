@@ -48,12 +48,12 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
 LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.name="e.g. Example project name" \
-      org.label-schema.description="Example project description in 300 chars or less" \
-      org.label-schema.url="e.g. https://www.example.com/" \
+      org.label-schema.name="SSHDSOLR" \
+      org.label-schema.description="Docker container running SOLR and SSHD" \
+      org.label-schema.url="https://hub.docker.com/r/jpmaria/sshdsolr" \
       org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="e.g. https://github.com/microscaling/microscaling" \
-      org.label-schema.vendor="e.g. ACME Inc" \
+      org.label-schema.vcs-url="https://github.com/joaopgmaria/sshdsolr" \
+      org.label-schema.vendor="jpmaria" \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0"
 
