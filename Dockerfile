@@ -44,4 +44,17 @@ RUN chmod +x /home/$SOLR_USER/prepare_solr.sh
 WORKDIR /home/$SOLR_USER
 USER $SOLR_USER
 
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="e.g. Example project name" \
+      org.label-schema.description="Example project description in 300 chars or less" \
+      org.label-schema.url="e.g. https://www.example.com/" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="e.g. https://github.com/microscaling/microscaling" \
+      org.label-schema.vendor="e.g. ACME Inc" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0"
+
 CMD ./prepare_solr.sh && sudo service solr start && sudo service ssh restart && sleep 10 && /bin/bash
